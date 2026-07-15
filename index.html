@@ -1,0 +1,1283 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>AI数据驾驶舱产品架构｜客户确认版</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:1440px;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="AI数据驾驶舱产品架构" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Professional Dashboard Architecture&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;pro-dashboard-arch&quot; aria-label=&quot;AI数据驾驶舱专业功能架构与大屏信息结构&quot;&gt;
+  &lt;style&gt;
+    #pro-dashboard-arch { color:var(--foreground); }
+    #pro-dashboard-arch .tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+    #pro-dashboard-arch .view[hidden] { display:none; }
+    #pro-dashboard-arch .eyebrow { color:var(--muted-foreground); margin-bottom:8px; }
+    #pro-dashboard-arch .arch { display:grid; gap:20px; }
+    #pro-dashboard-arch .audience { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+    #pro-dashboard-arch .persona { text-align:center; padding:9px 6px; color:var(--muted-foreground); border-bottom:2px solid var(--border); }
+    #pro-dashboard-arch .entry { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:18px; }
+    #pro-dashboard-arch .entry-line { height:1px; background:var(--border); }
+    #pro-dashboard-arch .entry-core { padding:13px 24px; border-radius:6px; background:var(--primary); color:var(--primary-foreground); font-weight:500; text-align:center; }
+    #pro-dashboard-arch .domains { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
+    #pro-dashboard-arch .domain { min-height:174px; padding:18px 14px; border:0; border-radius:6px; text-align:left; color:var(--card-foreground); background:color-mix(in srgb,var(--viz-series-1) 11%,var(--card)); display:flex; flex-direction:column; gap:12px; position:relative; }
+    #pro-dashboard-arch .domain::before { content:&quot;&quot;; position:absolute; inset:0 auto 0 0; width:4px; border-radius:6px 0 0 6px; background:var(--viz-series-1); }
+    #pro-dashboard-arch .domain:nth-child(2) { background:color-mix(in srgb,var(--viz-series-2) 9%,var(--card)); }
+    #pro-dashboard-arch .domain:nth-child(3) { background:color-mix(in srgb,var(--viz-series-3) 9%,var(--card)); }
+    #pro-dashboard-arch .domain:nth-child(4) { background:color-mix(in srgb,var(--viz-series-4) 9%,var(--card)); }
+    #pro-dashboard-arch .domain:nth-child(5) { background:color-mix(in srgb,var(--viz-series-5) 9%,var(--card)); }
+    #pro-dashboard-arch .domain:nth-child(2)::before { background:var(--viz-series-2); }
+    #pro-dashboard-arch .domain:nth-child(3)::before { background:var(--viz-series-3); }
+    #pro-dashboard-arch .domain:nth-child(4)::before { background:var(--viz-series-4); }
+    #pro-dashboard-arch .domain:nth-child(5)::before { background:var(--viz-series-5); }
+    #pro-dashboard-arch .domain[aria-pressed=&quot;true&quot;] { outline:2px solid var(--ring); outline-offset:2px; }
+    #pro-dashboard-arch .num { color:var(--muted-foreground); }
+    #pro-dashboard-arch .domain strong { font-weight:500; }
+    #pro-dashboard-arch .domain p { margin:0; color:var(--muted-foreground); }
+    #pro-dashboard-arch .domain .route { margin-top:auto; color:var(--card-foreground); }
+    #pro-dashboard-arch .detail-line { display:grid; grid-template-columns:130px 1fr; gap:14px; padding:13px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    #pro-dashboard-arch .detail-label { color:var(--muted-foreground); }
+    #pro-dashboard-arch .detail-content { font-weight:500; }
+    #pro-dashboard-arch .capability { display:grid; grid-template-columns:140px 1fr; gap:14px; align-items:center; }
+    #pro-dashboard-arch .cap-label { color:var(--muted-foreground); }
+    #pro-dashboard-arch .cap-track { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; }
+    #pro-dashboard-arch .cap { padding:10px 6px; text-align:center; border-radius:5px; background:color-mix(in srgb,var(--viz-series-2) 10%,var(--card)); }
+    #pro-dashboard-arch .foundation { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding-top:16px; border-top:1px solid var(--border); }
+    #pro-dashboard-arch .foundation div { text-align:center; color:var(--muted-foreground); padding:7px; }
+
+    #pro-dashboard-arch .screen-toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+    #pro-dashboard-arch .screen { padding:12px; border:1px solid var(--border); border-radius:6px; background:var(--background); }
+    #pro-dashboard-arch .topbar { display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:center; padding:8px 10px; border-bottom:1px solid var(--border); }
+    #pro-dashboard-arch .brand { font-weight:500; }
+    #pro-dashboard-arch .screen-title { text-align:center; font-weight:500; }
+    #pro-dashboard-arch .global { text-align:right; color:var(--muted-foreground); }
+    #pro-dashboard-arch .canvas { display:grid; grid-template-columns:1fr 1.55fr 1fr; grid-template-rows:auto auto auto; gap:9px; padding:12px 0 9px; }
+    #pro-dashboard-arch .slot { min-height:74px; padding:12px; border-radius:5px; display:flex; flex-direction:column; justify-content:space-between; background:color-mix(in srgb,var(--viz-series-1) 8%,var(--card)); }
+    #pro-dashboard-arch .slot span { color:var(--muted-foreground); }
+    #pro-dashboard-arch .slot strong { font-weight:500; }
+    #pro-dashboard-arch .slot.hero { grid-column:2; grid-row:1 / span 2; min-height:190px; background:color-mix(in srgb,var(--viz-series-2) 11%,var(--card)); justify-content:center; align-items:center; text-align:center; gap:8px; }
+    #pro-dashboard-arch .slot.wide { grid-column:1 / span 3; min-height:58px; flex-direction:row; align-items:center; }
+    #pro-dashboard-arch .ai-dock { display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; padding:10px 12px; background:color-mix(in srgb,var(--viz-series-3) 10%,var(--card)); border-radius:5px; }
+    #pro-dashboard-arch .ai-dock strong { font-weight:500; }
+    #pro-dashboard-arch .ai-dock span { color:var(--muted-foreground); }
+    #pro-dashboard-arch .screen-note { display:grid; grid-template-columns:120px 1fr; gap:12px; padding-top:12px; }
+    #pro-dashboard-arch .note-label { color:var(--muted-foreground); }
+    #pro-dashboard-arch .note-value { font-weight:500; }
+    #pro-dashboard-arch .catalog { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:14px; }
+    #pro-dashboard-arch .catalog-item { padding:12px 10px; border-radius:5px; background:color-mix(in srgb,var(--viz-series-4) 8%,var(--card)); min-height:78px; display:flex; flex-direction:column; gap:6px; }
+    #pro-dashboard-arch .catalog-item strong { font-weight:500; }
+    #pro-dashboard-arch .catalog-item span { color:var(--muted-foreground); }
+    #pro-dashboard-arch .ai-planning { margin-top:18px; padding-top:18px; border-top:1px solid var(--border); display:grid; gap:14px; }
+    #pro-dashboard-arch .ai-heading { display:flex; align-items:center; gap:9px; font-weight:500; }
+    #pro-dashboard-arch .role-rail { display:flex; gap:7px; flex-wrap:wrap; }
+    #pro-dashboard-arch .ai-flow { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:18px; align-items:stretch; }
+    #pro-dashboard-arch .ai-step { position:relative; min-height:112px; padding:14px 12px; border-radius:6px; background:color-mix(in srgb,var(--viz-series-2) 10%,var(--card)); display:flex; flex-direction:column; gap:8px; }
+    #pro-dashboard-arch .ai-step:not(:last-child)::after { content:&quot;→&quot;; position:absolute; right:-15px; top:50%; color:var(--muted-foreground); }
+    #pro-dashboard-arch .ai-step strong { font-weight:500; display:flex; align-items:center; gap:7px; }
+    #pro-dashboard-arch .ai-step span { color:var(--muted-foreground); }
+    #pro-dashboard-arch .interaction-demo { display:grid; grid-template-columns:1fr 1.2fr; gap:10px; }
+    #pro-dashboard-arch .question-band, #pro-dashboard-arch .response-band { padding:14px; border-radius:6px; min-height:92px; display:flex; flex-direction:column; gap:8px; }
+    #pro-dashboard-arch .question-band { background:color-mix(in srgb,var(--viz-series-3) 10%,var(--card)); }
+    #pro-dashboard-arch .response-band { background:color-mix(in srgb,var(--viz-series-5) 10%,var(--card)); }
+    #pro-dashboard-arch .question-band span, #pro-dashboard-arch .response-band span { color:var(--muted-foreground); }
+    #pro-dashboard-arch .question-band strong, #pro-dashboard-arch .response-band strong { font-weight:500; }
+    #pro-dashboard-arch .response-actions { display:flex; gap:10px; flex-wrap:wrap; color:var(--card-foreground); }
+    #pro-dashboard-arch .response-actions span { color:var(--card-foreground); }
+    @media (max-width:700px) {
+      #pro-dashboard-arch .audience, #pro-dashboard-arch .domains { grid-template-columns:1fr; }
+      #pro-dashboard-arch .domain { min-height:auto; }
+      #pro-dashboard-arch .capability, #pro-dashboard-arch .detail-line, #pro-dashboard-arch .screen-note { grid-template-columns:1fr; }
+      #pro-dashboard-arch .cap-track, #pro-dashboard-arch .foundation { grid-template-columns:1fr 1fr; }
+      #pro-dashboard-arch .canvas { grid-template-columns:1fr; grid-template-rows:auto; }
+      #pro-dashboard-arch .slot.hero, #pro-dashboard-arch .slot.wide { grid-column:auto; grid-row:auto; }
+      #pro-dashboard-arch .topbar { grid-template-columns:1fr; }
+      #pro-dashboard-arch .screen-title, #pro-dashboard-arch .global { text-align:left; }
+      #pro-dashboard-arch .catalog { grid-template-columns:1fr; }
+      #pro-dashboard-arch .ai-flow, #pro-dashboard-arch .interaction-demo { grid-template-columns:1fr; }
+      #pro-dashboard-arch .ai-step:not(:last-child)::after { content:&quot;↓&quot;; right:auto; left:50%; top:auto; bottom:-18px; }
+    }
+  &lt;/style&gt;
+
+  &lt;div class=&quot;tabs&quot; role=&quot;tablist&quot; aria-label=&quot;架构视图&quot;&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; role=&quot;tab&quot; aria-selected=&quot;true&quot; data-view=&quot;function&quot;&gt;功能架构&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; role=&quot;tab&quot; aria-selected=&quot;false&quot; data-view=&quot;screen&quot;&gt;大屏信息结构&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;section class=&quot;view arch&quot; data-panel=&quot;function&quot; role=&quot;tabpanel&quot;&gt;
+    &lt;div&gt;
+      &lt;div class=&quot;eyebrow&quot;&gt;服务对象&lt;/div&gt;
+      &lt;div class=&quot;audience&quot;&gt;
+        &lt;div class=&quot;persona&quot;&gt;校领导&lt;/div&gt;&lt;div class=&quot;persona&quot;&gt;学院负责人&lt;/div&gt;&lt;div class=&quot;persona&quot;&gt;就业中心&lt;/div&gt;&lt;div class=&quot;persona&quot;&gt;辅导员&lt;/div&gt;&lt;div class=&quot;persona&quot;&gt;产业合作专员&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;entry&quot; aria-label=&quot;统一驾驶舱入口&quot;&gt;&lt;div class=&quot;entry-line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;entry-core&quot;&gt;AI 数据驾驶舱&lt;/div&gt;&lt;div class=&quot;entry-line&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;
+      &lt;div class=&quot;eyebrow&quot;&gt;五大业务主题 · 点击查看能力边界&lt;/div&gt;
+      &lt;div class=&quot;domains&quot;&gt;
+        &lt;button type=&quot;button&quot; class=&quot;domain&quot; aria-pressed=&quot;true&quot; data-domain=&quot;0&quot;&gt;&lt;span class=&quot;num&quot;&gt;01&lt;/span&gt;&lt;strong&gt;全校就业态势总览&lt;/strong&gt;&lt;p&gt;监测就业进展、区域与行业流向、就业质量及风险预警&lt;/p&gt;&lt;span class=&quot;route&quot;&gt;总览 → 定位 → 预警&lt;/span&gt;&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;domain&quot; aria-pressed=&quot;false&quot; data-domain=&quot;1&quot;&gt;&lt;span class=&quot;num&quot;&gt;02&lt;/span&gt;&lt;strong&gt;学院和专业深度分析&lt;/strong&gt;&lt;p&gt;诊断专业竞争力、对口度、稳定性、满意度与培养有效性&lt;/p&gt;&lt;span class=&quot;route&quot;&gt;对标 → 归因 → 改进&lt;/span&gt;&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;domain&quot; aria-pressed=&quot;false&quot; data-domain=&quot;2&quot;&gt;&lt;span class=&quot;num&quot;&gt;03&lt;/span&gt;&lt;strong&gt;市场需求与人才画像&lt;/strong&gt;&lt;p&gt;连接岗位需求、技能标签、学生能力与企业反馈&lt;/p&gt;&lt;span class=&quot;route&quot;&gt;需求 → 匹配 → 补缺&lt;/span&gt;&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;domain&quot; aria-pressed=&quot;false&quot; data-domain=&quot;3&quot;&gt;&lt;span class=&quot;num&quot;&gt;04&lt;/span&gt;&lt;strong&gt;就业困难群体专题&lt;/strong&gt;&lt;p&gt;形成困难识别、举措推荐、任务跟进与帮扶成效闭环&lt;/p&gt;&lt;span class=&quot;route&quot;&gt;识别 → 干预 → 跟踪&lt;/span&gt;&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;domain&quot; aria-pressed=&quot;false&quot; data-domain=&quot;4&quot;&gt;&lt;span class=&quot;num&quot;&gt;05&lt;/span&gt;&lt;strong&gt;智能制造人才供应&lt;/strong&gt;&lt;p&gt;呈现广西智能制造人才输送、企业合作与技能贡献&lt;/p&gt;&lt;span class=&quot;route&quot;&gt;输送 → 合作 → 提升&lt;/span&gt;&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;detail-line&quot; aria-live=&quot;polite&quot;&gt;&lt;div class=&quot;detail-label&quot;&gt;当前主题能力&lt;/div&gt;&lt;div class=&quot;detail-content&quot; data-detail&gt;核心指标 · 学院排名 · 地域流向 · 行业单位 · 质量概览 · 风险预警&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&quot;capability&quot;&gt;
+      &lt;div class=&quot;cap-label&quot;&gt;AI 交互中枢&lt;/div&gt;
+      &lt;div class=&quot;cap-track&quot;&gt;&lt;div class=&quot;cap&quot;&gt;角色识别&lt;/div&gt;&lt;div class=&quot;cap&quot;&gt;意图路由&lt;/div&gt;&lt;div class=&quot;cap&quot;&gt;屏幕联动&lt;/div&gt;&lt;div class=&quot;cap&quot;&gt;智能洞察&lt;/div&gt;&lt;div class=&quot;cap&quot;&gt;行动建议&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+      &lt;div class=&quot;eyebrow&quot;&gt;数据与平台底座&lt;/div&gt;
+      &lt;div class=&quot;foundation&quot;&gt;&lt;div&gt;统一指标口径&lt;/div&gt;&lt;div&gt;学生与就业数据&lt;/div&gt;&lt;div&gt;岗位与企业数据&lt;/div&gt;&lt;div&gt;权限 · 脱敏 · 审计&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;view&quot; data-panel=&quot;screen&quot; role=&quot;tabpanel&quot; hidden&gt;
+    &lt;div class=&quot;screen-toolbar&quot; role=&quot;group&quot; aria-label=&quot;主题页面选择&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; data-theme=&quot;0&quot;&gt;01 态势&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-theme=&quot;1&quot;&gt;02 学院&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-theme=&quot;2&quot;&gt;03 供需&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-theme=&quot;3&quot;&gt;04 困难&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-theme=&quot;4&quot;&gt;05 产业&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;screen&quot;&gt;
+      &lt;div class=&quot;topbar&quot;&gt;&lt;div class=&quot;brand&quot;&gt;AI 数据驾驶舱&lt;/div&gt;&lt;div class=&quot;screen-title&quot; data-screen-title&gt;全校就业态势总览&lt;/div&gt;&lt;div class=&quot;global&quot;&gt;届次 · 学院 · 专业 · 更新时间&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&quot;canvas&quot;&gt;
+        &lt;div class=&quot;slot&quot;&gt;&lt;span&gt;关键结构&lt;/span&gt;&lt;strong data-slot=&quot;0&quot;&gt;就业核心指标&lt;/strong&gt;&lt;/div&gt;
+        &lt;div class=&quot;slot hero&quot;&gt;&lt;span&gt;主视觉 / 决策焦点&lt;/span&gt;&lt;strong data-slot=&quot;2&quot;&gt;广西就业流向地图&lt;/strong&gt;&lt;/div&gt;
+        &lt;div class=&quot;slot&quot;&gt;&lt;span&gt;排名对比&lt;/span&gt;&lt;strong data-slot=&quot;1&quot;&gt;学院就业排名&lt;/strong&gt;&lt;/div&gt;
+        &lt;div class=&quot;slot&quot;&gt;&lt;span&gt;质量诊断&lt;/span&gt;&lt;strong data-slot=&quot;3&quot;&gt;就业质量概览&lt;/strong&gt;&lt;/div&gt;
+        &lt;div class=&quot;slot&quot;&gt;&lt;span&gt;风险机会&lt;/span&gt;&lt;strong data-slot=&quot;4&quot;&gt;风险预警&lt;/strong&gt;&lt;/div&gt;
+        &lt;div class=&quot;slot wide&quot;&gt;&lt;span&gt;趋势 / 动态 / 行动&lt;/span&gt;&lt;strong data-slot=&quot;5&quot;&gt;近三届趋势 · 行业单位流向&lt;/strong&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;ai-dock&quot;&gt;&lt;strong&gt;AI 角色&lt;/strong&gt;&lt;span data-ai&gt;校领导视角：目标差距、学院贡献与结构风险&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;btn btn-ghost&quot; data-tooltip=&quot;AI可驱动切页、筛选、高亮和下钻&quot;&gt;智能透视&lt;/button&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;screen-note&quot;&gt;&lt;div class=&quot;note-label&quot;&gt;信息优先级&lt;/div&gt;&lt;div class=&quot;note-value&quot; data-priority&gt;先看目标是否达成，再看结构差距，最后进入风险对象与行动建议。&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&quot;ai-planning&quot;&gt;
+      &lt;div class=&quot;ai-heading&quot;&gt;&lt;i data-lucide=&quot;sparkles&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;span&gt;AI 互动功能规划&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;role-rail&quot; role=&quot;group&quot; aria-label=&quot;AI查看角色&quot;&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; data-role=&quot;0&quot;&gt;校领导&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-role=&quot;1&quot;&gt;学院负责人&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-role=&quot;2&quot;&gt;就业中心&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-role=&quot;3&quot;&gt;辅导员&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-role=&quot;4&quot;&gt;产业合作专员&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;ai-flow&quot; aria-label=&quot;AI互动流程&quot;&gt;
+        &lt;div class=&quot;ai-step&quot;&gt;&lt;strong&gt;&lt;i data-lucide=&quot;user-round-check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;1 选择角色&lt;/strong&gt;&lt;span&gt;加载该角色默认主题、指标权重和推荐问题。&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;ai-step&quot;&gt;&lt;strong&gt;&lt;i data-lucide=&quot;message-square-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;2 发起提问&lt;/strong&gt;&lt;span&gt;通过预设问题、自然语言或点击卡片触发分析。&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;ai-step&quot;&gt;&lt;strong&gt;&lt;i data-lucide=&quot;route&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;3 识别路由&lt;/strong&gt;&lt;span&gt;识别主题、对象、指标、时间及比较意图。&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;ai-step&quot;&gt;&lt;strong&gt;&lt;i data-lucide=&quot;scan-search&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;4 屏幕响应&lt;/strong&gt;&lt;span&gt;自动切页、写入筛选、突出卡片并打开下钻。&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;ai-step&quot;&gt;&lt;strong&gt;&lt;i data-lucide=&quot;panel-right-open&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;5 智能透视&lt;/strong&gt;&lt;span&gt;展示洞察、数据依据、行动建议和可继续追问。&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;interaction-demo&quot; aria-live=&quot;polite&quot;&gt;
+        &lt;div class=&quot;question-band&quot;&gt;&lt;span data-role-label&gt;校领导 · 示例提问&lt;/span&gt;&lt;strong data-role-question&gt;“哪些学院对当前目标差距影响最大？”&lt;/strong&gt;&lt;/div&gt;
+        &lt;div class=&quot;response-band&quot;&gt;&lt;span&gt;大屏响应&lt;/span&gt;&lt;strong data-role-response&gt;切到全校总览，学院排名按目标缺口排序，高亮前三项并打开智能透视。&lt;/strong&gt;&lt;div class=&quot;response-actions&quot;&gt;&lt;span&gt;AI洞察 3条&lt;/span&gt;&lt;span&gt;数据明细&lt;/span&gt;&lt;span&gt;行动建议&lt;/span&gt;&lt;span&gt;继续追问&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;catalog&quot; data-catalog aria-label=&quot;当前主题完整模块目录&quot;&gt;&lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;script&gt;
+    (() =&gt; {
+      const root = document.getElementById(&#x27;pro-dashboard-arch&#x27;);
+      const tabButtons = root.querySelectorAll(&#x27;[data-view]&#x27;);
+      const panels = root.querySelectorAll(&#x27;[data-panel]&#x27;);
+      const details = [
+        &#x27;核心指标 · 学院排名 · 地域流向 · 行业单位 · 质量概览 · 风险预警&#x27;,
+        &#x27;学院画像 · 专业矩阵 · 对口度 · 期待吻合 · 稳定满意 · 培养有效性&#x27;,
+        &#x27;市场需求 · 热招岗位 · 技能热力 · 人才画像 · 人岗匹配 · 供需缺口&#x27;,
+        &#x27;困难总览 · 学院比重 · 类型分析 · 求职漏斗 · 举措推荐 · 成效督办&#x27;,
+        &#x27;输送总览 · 企业Top10 · 广西地图 · 产业分布 · 岗位薪资 · 核心技能&#x27;
+      ];
+      const screens = [
+        [&#x27;全校就业态势总览&#x27;,&#x27;就业核心指标&#x27;,&#x27;学院就业排名&#x27;,&#x27;广西就业流向地图&#x27;,&#x27;就业质量概览&#x27;,&#x27;风险预警&#x27;,&#x27;近三届趋势 · 行业单位流向&#x27;,&#x27;校领导视角：目标差距、学院贡献与结构风险&#x27;,&#x27;先看目标是否达成，再看结构差距，最后进入风险对象与行动建议。&#x27;],
+        [&#x27;学院和专业深度分析&#x27;,&#x27;学院画像总卡&#x27;,&#x27;专业落实矩阵&#x27;,&#x27;学院—专业竞争力矩阵&#x27;,&#x27;职业期待吻合&#x27;,&#x27;培养有效性&#x27;,&#x27;对口度 · 稳定性 · 满意度趋势&#x27;,&#x27;学院负责人视角：专业短板、培养成效与改进空间&#x27;,&#x27;先选学院，再定位专业差距，最终落到课程、证书和实训改进。&#x27;],
+        [&#x27;市场需求与人才画像&#x27;,&#x27;市场需求总览&#x27;,&#x27;热招岗位 Top10&#x27;,&#x27;专业—岗位—技能匹配矩阵&#x27;,&#x27;本校人才画像&#x27;,&#x27;技能缺口榜&#x27;,&#x27;供需比 · 薪资机会 · 企业反馈&#x27;,&#x27;就业中心视角：市场机会、人岗匹配与企业渠道&#x27;,&#x27;以匹配矩阵为中心，左看市场需求，右看人才供给，底部承接机会行动。&#x27;],
+        [&#x27;就业困难群体专题&#x27;,&#x27;困难群体总览&#x27;,&#x27;学院困难比重&#x27;,&#x27;困难分层与服务闭环&#x27;,&#x27;困难类型分析&#x27;,&#x27;待办与督办&#x27;,&#x27;求职漏斗 · 帮扶举措 · 成效趋势&#x27;,&#x27;辅导员视角：困难识别、阻断环节与今日任务&#x27;,&#x27;从宏观比重下钻到困难类型，以服务举措和跟进任务形成闭环。&#x27;],
+        [&#x27;智能制造产业人才供应&#x27;,&#x27;人才输送总览&#x27;,&#x27;输送企业 Top10&#x27;,&#x27;广西智能制造合作地图&#x27;,&#x27;产业贡献分布&#x27;,&#x27;核心技能缺口&#x27;,&#x27;岗位薪资 · 合作效能 · 趋势&#x27;,&#x27;产业合作视角：人才贡献、重点企业与合作空间&#x27;,&#x27;以广西合作地图为中心，串联企业、产业环节、岗位薪资和技能供给。&#x27;]
+      ];
+      const catalogs = [
+        [
+          [&#x27;就业核心指标&#x27;,&#x27;毕业生数、落实人数、毕业去向落实率、目标完成度、待就业人数及去向结构。&#x27;],
+          [&#x27;近三届趋势&#x27;,&#x27;落实率、升学率、灵活就业率及同比变化，叠加年度目标线。&#x27;],
+          [&#x27;学院就业排名&#x27;,&#x27;学院落实率、待就业人数、困难生落实率及排名升降。&#x27;],
+          [&#x27;就业地区流向&#x27;,&#x27;留桂率、广西城市分布、七大区域及国家战略区域流向。&#x27;],
+          [&#x27;就业行业与单位&#x27;,&#x27;三次产业、行业Top10、单位性质、单位规模及重点企业。&#x27;],
+          [&#x27;就业质量概览&#x27;,&#x27;专业对口度、职业期待吻合度、满意度、稳定性与机会充分度。&#x27;],
+          [&#x27;风险预警&#x27;,&#x27;低落实学院专业、连续下降、集中待就业与流程异常。&#x27;]
+        ],
+        [
+          [&#x27;学院画像总卡&#x27;,&#x27;落实率、对口度、平均薪资、满意度、稳定性、升学率及校均差。&#x27;],
+          [&#x27;专业落实矩阵&#x27;,&#x27;专业×落实率、人数、趋势、困难生比重，识别低落实大规模专业。&#x27;],
+          [&#x27;专业对口度&#x27;,&#x27;工作与专业相关度、Top/Bottom专业、专业到岗位族流向。&#x27;],
+          [&#x27;升学与灵活就业&#x27;,&#x27;升学率、升学院校层次、自由职业及自主创业结构。&#x27;],
+          [&#x27;职业期待吻合&#x27;,&#x27;薪资、地点、行业、岗位类型等期望与实际差距。&#x27;],
+          [&#x27;稳定性与满意度&#x27;,&#x27;就业稳定比例、离职原因及薪资福利、发展空间等满意度。&#x27;],
+          [&#x27;培养有效性&#x27;,&#x27;证书课程溢价、实训到转正漏斗及低效课程预警。&#x27;]
+        ],
+        [
+          [&#x27;市场需求总览&#x27;,&#x27;有效企业数、岗位数、需求人数、近三月新增岗位及竞争度。&#x27;],
+          [&#x27;热招岗位Top10&#x27;,&#x27;岗位需求量、企业数、增长率、学历与经验要求。&#x27;],
+          [&#x27;技能需求热力&#x27;,&#x27;从JD提取工具、技术、证书与软技能，形成需求热力矩阵。&#x27;],
+          [&#x27;本校人才画像&#x27;,&#x27;专业技能、软件工具、证书、项目与实训经历覆盖率。&#x27;],
+          [&#x27;人岗匹配指数&#x27;,&#x27;简历标签与JD标签重合度及高、中、低匹配人才规模。&#x27;],
+          [&#x27;供需比与缺口&#x27;,&#x27;专业毕业生供给与岗位需求对比、月度供需比及缺口Top10。&#x27;],
+          [&#x27;薪资与机会&#x27;,&#x27;岗位薪资箱线、地区行业差异及就业机会感知。&#x27;],
+          [&#x27;企业反馈&#x27;,&#x27;聘用理由、能力评价、持续招录企业、渠道转化与复购率。&#x27;]
+        ],
+        [
+          [&#x27;困难群体总览&#x27;,&#x27;困难学生数与占比、落实率、新增解除及连续未进展人数。&#x27;],
+          [&#x27;学院困难比重&#x27;,&#x27;各学院困难学生比重、困难生落实率及帮扶覆盖率。&#x27;],
+          [&#x27;困难类型分析&#x27;,&#x27;经济、学业、技能、求职行为、心理、地域限制及慢就业类型。&#x27;],
+          [&#x27;求职转化漏斗&#x27;,&#x27;简历、投递、笔试、面试、Offer、签约各环节转化与停滞。&#x27;],
+          [&#x27;宏观帮扶举措&#x27;,&#x27;岗位专场、简历门诊、技能培训、心理支持、导师结对与企业直推。&#x27;],
+          [&#x27;个性化推荐&#x27;,&#x27;按困难类型推荐岗位、培训、导师、企业与时间节点。&#x27;],
+          [&#x27;帮扶成效&#x27;,&#x27;覆盖、响应、参与、投递、面试、就业转化及解除困难率。&#x27;],
+          [&#x27;待办与督办&#x27;,&#x27;未联系、超期未跟进、长期零投递与Offer未签约任务。&#x27;]
+        ],
+        [
+          [&#x27;人才输送总览&#x27;,&#x27;累计与本届输送人数、留桂率、对口率、平均薪资及合作企业数。&#x27;],
+          [&#x27;输送企业Top10&#x27;,&#x27;企业录用人数、涉及专业、留存率、连续招录年数与岗位质量。&#x27;],
+          [&#x27;广西合作地图&#x27;,&#x27;企业位置、产业园区、录用规模与合作类型，支持城市企业下钻。&#x27;],
+          [&#x27;产业贡献分布&#x27;,&#x27;装备制造、汽车、新能源、电子信息、工业软件等人才分布。&#x27;],
+          [&#x27;岗位薪资&#x27;,&#x27;智能制造岗位薪资区间及地区、企业、岗位差异。&#x27;],
+          [&#x27;核心技能&#x27;,&#x27;PLC、工业机器人、数控、CAD/CAE、MES、机器视觉需求与覆盖。&#x27;],
+          [&#x27;合作效能&#x27;,&#x27;访企、新增岗位、实习、转正、企业复购率与渠道贡献净值。&#x27;]
+        ]
+      ];
+      const roles = [
+        [&#x27;校领导 · 示例提问&#x27;,&#x27;“哪些学院对当前目标差距影响最大？”&#x27;,&#x27;切到全校总览，学院排名按目标缺口排序，高亮前三项并打开智能透视。&#x27;],
+        [&#x27;学院负责人 · 示例提问&#x27;,&#x27;“本学院哪个专业最需要调整培养方案？”&#x27;,&#x27;切到学院专业页并锁定所属学院，突出专业矩阵、对口度和培养有效性。&#x27;],
+        [&#x27;就业中心 · 示例提问&#x27;,&#x27;“本月增长最快的岗位和技能缺口是什么？”&#x27;,&#x27;切到供需匹配页，热招岗位按增幅排序，联动技能缺口与适配专业。&#x27;],
+        [&#x27;辅导员 · 示例提问&#x27;,&#x27;“今天应优先跟进哪些困难群体？”&#x27;,&#x27;切到困难专题并锁定管理范围，突出长期零投递、流程停滞和超期任务。&#x27;],
+        [&#x27;产业合作专员 · 示例提问&#x27;,&#x27;“哪些智能制造企业值得深化合作？”&#x27;,&#x27;切到产业专题，企业按录用、留存和复购综合排序，地图同步高亮。&#x27;]
+      ];
+      const renderCatalog = index =&gt; {
+        const box=root.querySelector(&#x27;[data-catalog]&#x27;);
+        box.innerHTML=&#x27;&#x27;;
+        catalogs[index].forEach(item =&gt; {
+          const node=document.createElement(&#x27;div&#x27;);
+          node.className=&#x27;catalog-item&#x27;;
+          const strong=document.createElement(&#x27;strong&#x27;);
+          strong.textContent=item[0];
+          const span=document.createElement(&#x27;span&#x27;);
+          span.textContent=item[1];
+          node.append(strong,span);
+          box.append(node);
+        });
+      };
+      tabButtons.forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+        const target = button.dataset.view;
+        tabButtons.forEach(item =&gt; { const active=item===button; item.setAttribute(&#x27;aria-selected&#x27;,String(active)); item.classList.toggle(&#x27;btn-primary&#x27;,active); });
+        panels.forEach(panel =&gt; { panel.hidden=panel.dataset.panel!==target; });
+      }));
+      root.querySelectorAll(&#x27;[data-domain]&#x27;).forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+        root.querySelectorAll(&#x27;[data-domain]&#x27;).forEach(item =&gt; item.setAttribute(&#x27;aria-pressed&#x27;,String(item===button)));
+        root.querySelector(&#x27;[data-detail]&#x27;).textContent=details[Number(button.dataset.domain)];
+      }));
+      root.querySelectorAll(&#x27;[data-theme]&#x27;).forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+        const index=Number(button.dataset.theme), data=screens[index];
+        root.querySelectorAll(&#x27;[data-theme]&#x27;).forEach(item =&gt; item.classList.toggle(&#x27;btn-primary&#x27;,item===button));
+        root.querySelector(&#x27;[data-screen-title]&#x27;).textContent=data[0];
+        for(let i=0;i&lt;6;i++) root.querySelector(`[data-slot=&quot;${i}&quot;]`).textContent=data[i+1];
+        root.querySelector(&#x27;[data-ai]&#x27;).textContent=data[7];
+        root.querySelector(&#x27;[data-priority]&#x27;).textContent=data[8];
+        renderCatalog(index);
+      }));
+      root.querySelectorAll(&#x27;[data-role]&#x27;).forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+        const index=Number(button.dataset.role), data=roles[index];
+        root.querySelectorAll(&#x27;[data-role]&#x27;).forEach(item =&gt; item.classList.toggle(&#x27;btn-primary&#x27;,item===button));
+        root.querySelector(&#x27;[data-role-label]&#x27;).textContent=data[0];
+        root.querySelector(&#x27;[data-role-question]&#x27;).textContent=data[1];
+        root.querySelector(&#x27;[data-role-response]&#x27;).textContent=data[2];
+      }));
+      renderCatalog(0);
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>

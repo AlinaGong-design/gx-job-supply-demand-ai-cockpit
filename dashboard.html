@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="广西区域化岗位数据供需一体化平台原型">
+  <title>广西区域化岗位数据供需一体化平台</title>
+  <link rel="stylesheet" href="v2.css">
+  <link rel="stylesheet" href="tech-dashboard.css">
+</head>
+<body>
+  <div id="app" class="app-shell" data-role="leader">
+    <section class="app-main">
+      <header class="topbar">
+        <div class="page-identity">
+          <div>
+            <p id="breadcrumb">全校就业治理总览</p>
+            <h1 id="pageTitle">广西区域化岗位数据供需一体化平台</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="sync-state"><i class="status-dot verified"></i><span>数据校验完成<small>更新于 2026-07-14 18:00</small></span></div>
+          <button class="ai-trigger" id="aiOpen" title="定位广西区域智能查询"><span>GX</span>区域查询</button>
+          <button class="icon-button" id="fullscreen" aria-label="全屏查看" title="全屏查看">⛶</button>
+          <button class="avatar-button" title="当前账号：校级管理员">校</button>
+        </div>
+      </header>
+
+      <section class="filterbar" aria-label="数据筛选">
+        <label><span>查看角色</span><select id="roleSelect">
+          <option value="leader">校领导</option><option value="college">二级学院</option>
+          <option value="industry">工信部门</option><option value="hr">人社部门</option>
+          <option value="career">就业处</option><option value="student">学生</option>
+        </select></label>
+        <label><span>统计届别</span><select id="periodSelect"><option>2025届</option><option>2024届</option><option>近三届</option></select></label>
+        <label><span>数据范围</span><select id="scopeSelect"><option>全校</option><option>智能制造学院</option><option>交通运输学院</option><option>信息工程学院</option></select></label>
+        <div class="filter-spacer"></div>
+        <button class="ghost-button" id="dataInfo"><span aria-hidden="true">ⓘ</span> 当前数据说明</button>
+        <button class="primary-button compact" id="createTaskTop"><span aria-hidden="true">＋</span> 新建研判任务</button>
+      </section>
+
+      <main class="dashboard" id="dashboard">
+        <section class="summary-band" aria-labelledby="summaryTitle">
+          <div class="band-heading">
+            <div><span class="step-label">01 · 看结果</span><h2 id="summaryTitle">全局就业态势</h2></div>
+            <p>2025届正式统计口径 <button class="inline-action" data-ai="解读全校就业态势">AI 解读</button></p>
+          </div>
+          <div class="metric-grid" id="metricGrid"></div>
+          <div class="destination-block" id="destinationBlock">
+            <div class="mini-heading"><b>毕业去向结构</b><span>样本 11,065 人</span></div>
+            <div class="stacked-bar" aria-label="单位就业73.57%，升学17.52%，待就业8.52%">
+              <i class="employment" style="width:73.57%"></i><i class="study" style="width:17.52%"></i><i class="waiting" style="width:8.52%"></i>
+            </div>
+            <div class="legend"><span><i class="employment"></i>单位就业 73.57%</span><span><i class="study"></i>升学 17.52%</span><span><i class="waiting"></i>待就业 8.52%</span></div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <aside class="structure-panel panel" aria-labelledby="structureTitle">
+            <div class="panel-heading"><div><span class="step-label">02 · 看结构</span><h2 id="structureTitle">结构差异</h2></div><span class="data-badge pending-badge">演示结构</span></div>
+            <div class="segmented" id="structureTabs" role="tablist">
+              <button class="active" data-structure="college">学院</button><button data-structure="group">群体</button>
+              <button data-structure="region">区域</button><button data-structure="industry">产业</button>
+            </div>
+            <div class="list-caption"><span>对象</span><span>核心指标</span><span>状态</span></div>
+            <div id="structureList" class="structure-list"></div>
+            <div class="panel-note"><span>提示</span> 点击任一对象，主视图区将自动下钻并保留当前筛选。</div>
+          </aside>
+
+          <section class="diagnosis-panel panel" aria-labelledby="stageTitle">
+            <div class="panel-heading diagnosis-heading">
+              <div><span class="step-label" id="stageStepLabel">03 · 智能查询</span><h2 id="stageTitle">数据查询与分析</h2></div>
+              <div class="segmented stage-tabs" id="stageTabs" role="tablist">
+                <button class="active" data-stage="globe">智能查询</button><button data-stage="college">学院诊断</button><button data-stage="industry">产业协同</button><button data-stage="operation">运营作战</button>
+              </div>
+            </div>
+            <div id="stageContent" class="stage-content"></div>
+          </section>
+
+          <aside class="action-panel panel" aria-labelledby="actionTitle">
+            <div class="panel-heading"><div><span class="step-label">05 · 促行动</span><h2 id="actionTitle">行动与预警</h2></div><span class="risk-count">4 项待处置</span></div>
+            <div class="alert-summary"><span>本周闭环率</span><b>72%</b><div><i style="width:72%"></i></div></div>
+            <div id="alertList" class="alert-list"></div>
+            <div class="task-flow" aria-label="任务状态"><div><b>6</b><span>待研判</span></div><i>›</i><div><b>9</b><span>处理中</span></div><i>›</i><div><b>18</b><span>已完成</span></div></div>
+            <button class="primary-button full" id="createTask"><span aria-hidden="true">＋</span> 生成研判任务</button>
+          </aside>
+        </section>
+
+        <section class="market-band panel" aria-labelledby="marketTitle">
+          <div class="panel-heading market-heading">
+            <div><span class="step-label">04 · 看市场</span><h2 id="marketTitle">区域岗位需求信号</h2></div>
+            <div class="pending-message"><i class="status-dot pending"></i><span>岗位接口接入中<small>当前仅展示参考标签，不纳入正式统计</small></span></div>
+          </div>
+          <div class="market-content">
+            <div class="market-empty">
+              <span class="empty-icon" aria-hidden="true">⌁</span>
+              <div><b>实时岗位总量暂不展示</b><p>等待广西公共就业数据渠道接入与质量校验</p></div>
+              <span class="data-badge pending-badge">接入中</span>
+            </div>
+            <div class="market-module">
+              <div class="mini-heading"><b>紧缺岗位参考</b><span>非实时</span></div>
+              <div class="job-tags"><button data-job="智能制造技术">智能制造技术 <b>趋势 ↑</b></button><button data-job="新能源汽车维修">新能源汽车维修 <b>趋势 ↑</b></button><button data-job="工业软件">工业软件 <b>趋势 ↑</b></button></div>
+            </div>
+            <div class="market-module">
+              <div class="mini-heading"><b>高频技能参考</b><span>待数据验证</span></div>
+              <div class="skill-tags"><button data-ai="分析数字孪生技能需求">数字孪生</button><button data-ai="分析PLC编程技能需求">PLC编程</button><button data-ai="分析机器视觉技能需求">机器视觉</button><button data-ai="分析工业互联网技能需求">工业互联网</button><button data-ai="分析Python技能需求">Python</button></div>
+            </div>
+            <div class="source-list">
+              <div class="mini-heading"><b>数据源状态</b><span>3 类</span></div>
+              <p><span><i class="status-dot verified"></i>学校去向数据</span><b>已接入</b></p>
+              <p><span><i class="status-dot pending"></i>政府岗位数据</span><b>接入中</b></p>
+              <p><span><i class="status-dot reference"></i>招聘平台补充</span><b>参考</b></p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </section>
+
+    <button class="insight-fab" id="insightFab" type="button" aria-label="打开数据透视 AI" aria-expanded="false" aria-controls="aiDrawer" title="数据透视 AI">
+      <span class="insight-fab-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+
+    <aside class="drawer ai-drawer" id="aiDrawer" aria-hidden="true">
+      <div class="drawer-head"><div class="ai-mark">AI</div><div><h2>智能研判助手</h2><p>基于授权数据查询、解释与定位</p></div><button class="icon-button plain" id="aiClose" aria-label="关闭" title="关闭">×</button></div>
+      <div class="ai-context"><span>当前上下文</span><b id="aiContext">2025届 · 全校 · 校领导</b></div>
+      <div class="quick-questions">
+        <button data-question="全校就业态势是否健康？">全校态势</button><button data-question="哪些学院低于目标？">学院差异</button>
+        <button data-question="广西重点产业人才贡献如何？">产业贡献</button><button data-question="分析专业与岗位能力差距">能力差距</button>
+      </div>
+      <div class="ai-answer" id="aiAnswer"><div class="answer-empty"><span>⌘</span><b>选择一个问题开始研判</b><p>回答将同步呈现统计事实、分析建议与可信依据。</p></div></div>
+      <div class="evidence hidden" id="evidence">
+        <div><h3>可信依据</h3><span class="data-badge verified-badge">可追溯</span></div>
+        <dl><dt>数据来源</dt><dd>2025届就业质量数据</dd><dt>统计周期</dt><dd>截至 2026-07-14</dd><dt>样本范围</dt><dd>全校毕业生 11,065 人</dd><dt>指标口径</dt><dd>毕业去向落实率</dd></dl>
+      </div>
+      <div class="ai-compose"><textarea id="aiInput" rows="2" placeholder="输入指标、学院、专业或时间范围"></textarea><button id="aiSend" aria-label="发送问题" title="发送问题">↑</button></div>
+      <p class="ai-disclaimer">AI 仅提供辅助研判；涉及学生评价、预警和教学调整须由责任人员复核。</p>
+    </aside>
+
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+    <dialog class="modal" id="taskModal">
+      <form method="dialog" id="taskForm">
+        <div class="modal-head"><div><span class="step-label">ACTION LOOP</span><h2>新建研判任务</h2></div><button class="icon-button plain" value="cancel" aria-label="关闭">×</button></div>
+        <div class="modal-body">
+          <label class="field full-field"><span>任务标题</span><input id="taskTitle" required value="商贸管理学院就业风险复核"></label>
+          <label class="field"><span>任务类型</span><select><option>学院督导</option><option>学生帮扶</option><option>企业拓岗</option><option>教学研判</option></select></label>
+          <label class="field"><span>责任单位</span><select><option>商贸管理学院</option><option>就业处</option><option>教务处</option><option>智能制造学院</option></select></label>
+          <label class="field"><span>优先级</span><select><option>高</option><option>中</option><option>低</option></select></label>
+          <label class="field"><span>完成期限</span><input type="date" value="2026-07-22"></label>
+          <label class="field full-field"><span>研判依据</span><textarea rows="4">当前落实率 88.7%，低于校均 2.77 个百分点；专业对口度低于校均 7.19 个百分点。请复核未就业原因及专业岗位匹配情况。</textarea></label>
+          <div class="review-note full-field"><b>人工确认要求</b><p>任务派发前请核验统计口径、责任单位和涉及学生的授权范围。</p></div>
+        </div>
+        <div class="modal-actions"><button class="ghost-button" value="cancel">取消</button><button class="primary-button" id="submitTask" value="default">确认并生成</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="modal dictionary-modal" id="dictionaryModal">
+      <form method="dialog">
+        <div class="modal-head"><div><span class="step-label">DATA GOVERNANCE</span><h2>指标口径与数据状态</h2></div><button class="icon-button plain" value="cancel" aria-label="关闭">×</button></div>
+        <div class="dictionary-table" role="table">
+          <div class="dictionary-row header"><span>指标/数据域</span><span>当前口径</span><span>来源</span><span>状态</span></div>
+          <div class="dictionary-row"><b>毕业去向落实率</b><span>已落实人数 / 毕业生总数</span><span>2025届就业质量数据</span><em class="verified-badge">已接入</em></div>
+          <div class="dictionary-row"><b>留桂率</b><span>广西区内就业人数 / 单位就业人数</span><span>就业去向与地区编码</span><em class="verified-badge">已接入</em></div>
+          <div class="dictionary-row"><b>专业对口度</b><span>就业岗位与所学专业相关占比</span><span>就业质量调查</span><em class="verified-badge">已接入</em></div>
+          <div class="dictionary-row"><b>实时岗位总量</b><span>有效期内去重在招岗位</span><span>广西公共就业数据渠道</span><em class="pending-badge">接入中</em></div>
+        </div>
+        <div class="modal-actions"><button class="primary-button" value="cancel">知道了</button></div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script src="vendor/three.min.js"></script>
+  <script src="v2.js"></script>
+</body>
+</html>
